@@ -1,36 +1,32 @@
 apiVersion: apps/v1
-kind: Deployment # Kubernetes resource kind we are creating
+kind: Deployment
 metadata:
   name: react-vite-deployment
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: react-vite-app
-  replicas: 2 # Number of replicas that will be created for this deployment
   template:
     metadata:
       labels:
         app: react-vite-app
     spec:
       containers:
-        - name: react-vite-app
-          image: dhruvastar88/devops-app # Update with your image name
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 80 # Production static site served on port 80
-
+      - name: react-vite-app
+        image: dhruvastar88/devops-app  # <-- Your updated image
+        ports:
+        - containerPort: 80
 
 ---
-
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
+apiVersion: v1
+kind: Service
+metadata:
   name: react-vite-service
 spec:
   selector:
     app: react-vite-app
+  type: NodePort
   ports:
-    - protocol: "TCP"
-      port: 80 # The port that the service is running on in the cluster
-      targetPort: 80 # The port exposed by the service
-  type: LoadBalancer # type of the service.
+    - port: 80
+      targetPort: 80
