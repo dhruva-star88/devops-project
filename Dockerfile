@@ -1,15 +1,21 @@
-# Build stage
-FROM node:18 AS build
+# Use Node base image
+FROM node:18
+
+# Set working directory inside container
 WORKDIR /app
 
+# Copy only necessary files for installing dependencies
 COPY devops-integration/package*.json ./
+
+# Install dependencies
 RUN npm install
 
-COPY . .
+# Copy all source code
+COPY devops-integration/. .
+
+# Build the React app using Vite
 RUN npm run build
 
-# Serve using 'serve'
+# Optional: Use serve to serve the built files
 RUN npm install -g serve
-
-EXPOSE 80
 CMD ["serve", "-s", "dist", "-l", "80"]
