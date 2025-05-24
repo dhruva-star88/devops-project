@@ -4,7 +4,29 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Todo app state
+  const [todos, setTodos] = useState([])
+  const [input, setInput] = useState("")
+
+  const addTodo = (e) => {
+    e.preventDefault()
+    if (input.trim()) {
+      setTodos([...todos, { text: input, done: false }])
+      setInput("")
+    }
+  }
+
+  const toggleTodo = (idx) => {
+    setTodos(
+      todos.map((todo, i) =>
+        i === idx ? { ...todo, done: !todo.done } : todo
+      )
+    )
+  }
+
+  const removeTodo = (idx) => {
+    setTodos(todos.filter((_, i) => i !== idx))
+  }
 
   return (
     <>
@@ -17,17 +39,27 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      {/* Todo App */}
+      <div className="todo-container">
+        <h2>Todo App</h2>
+        <form onSubmit={addTodo} className="todo-form">
+          <input
+            className="todo-input"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Add a new todo..."
+          />
+          <button className="todo-add-btn" type="submit">Add</button>
+        </form>
+        <ul className="todo-list">
+          {todos.map((todo, idx) => (
+            <li key={idx} className={todo.done ? "todo-done" : ""}>
+              <span onClick={() => toggleTodo(idx)}>{todo.text}</span>
+              <button className="todo-remove-btn" onClick={() => removeTodo(idx)}>&times;</button>
+            </li>
+          ))}
+        </ul>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
